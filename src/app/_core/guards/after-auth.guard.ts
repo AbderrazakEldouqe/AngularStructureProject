@@ -1,15 +1,26 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router} from '@angular/router';
+import {Observable} from 'rxjs';
+import {TokenService} from '../services/token.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AfterAuthGuard implements CanActivate {
+  constructor(private tokenService: TokenService,
+              private router: Router) {
+  }
+
   canActivate(
     next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    state: RouterStateSnapshot): boolean {
+
+    if (this.tokenService.loggedIn()) {
+      this.router.navigateByUrl('/admin');
+      return false;
+    }
+
     return true;
   }
-  
+
 }
